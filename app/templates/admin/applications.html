@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}All Applications — Admin{% endblock %}
+{% block content %}
+<h2 class="mb-4">All Applications</h2>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student_id</th>
+                        <th>Student</th>
+                        <th>Roll No.</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ app.id }}</td>
+                        <td>{{ app.student.name }}</td>
+                        <td><code>{{ app.student.roll_number }}</code></td>
+                        <td>{{ app.drive.job_title }}</td>
+                        <td>{{ app.drive.company.company_name }}</td>
+                        <td>{{ app.applied_date.strftime('%d %b %Y, %H:%M') }}</td>
+                        <td>
+                            <span class="badge
+                                {% if app.status == 'selected' %}bg-success
+                                {% elif app.status == 'shortlisted' %}bg-primary
+                                {% elif app.status == 'rejected' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ app.status | capitalize }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No applications yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

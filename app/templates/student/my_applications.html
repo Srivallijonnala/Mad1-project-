@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}My Applications — Student{% endblock %}
+{% block content %}
+<h2 class="fw-bold mb-1"><i class="bi bi-file-earmark-check me-2 text-primary"></i>My Applications</h2>
+<p class="text-muted mb-4">Track the status of all your placement applications</p>
+{% if applications %}
+<div class="row g-3 mb-4">
+    {% set counts = {
+        'applied': applications | selectattr('status','equalto','applied') | list | length,
+        'shortlisted': applications | selectattr('status','equalto','shortlisted') | list | length,
+        'selected': applications | selectattr('status','equalto','selected') | list | length,
+        'rejected': applications | selectattr('status','equalto','rejected') | list | length
+    } %}
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fw-bold fs-4 text-secondary">{{ counts.applied }}</div>
+            <div class="small text-muted">Applied</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fw-bold fs-4 text-primary">{{ counts.shortlisted }}</div>
+            <div class="small text-muted">Shortlisted</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fw-bold fs-4 text-success">{{ counts.selected }}</div>
+            <div class="small text-muted">Selected 🎉</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fw-bold fs-4 text-danger">{{ counts.rejected }}</div>
+            <div class="small text-muted">Rejected</div>
+        </div>
+    </div>
+</div>
+<div class="row g-3">
+    {% for app in applications %}
+    <div class="col-12">
+        <div class="card border-0 shadow-sm
+            {% if app.status == 'selected' %}border-start border-success border-3
+            {% elif app.status == 'shortlisted' %}border-start border-primary border-3
+            {% elif app.status == 'rejected' %}border-start border-danger border-3
+            {% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <h6 class="fw-bold mb-1">{{ app.drive.job_title }}</h6>
+                        <p class="text-primary mb-1">{{ app.drive.company.company_name }}</p>
+                        <div class="text-muted small">
+                            {% if app.drive.package %}
+                                <i class="bi bi-currency-rupee me-1"></i>{{ app.drive.package }}
+                            {% endif %}
+                            {% if app.drive.location %}
+                                <i class="bi bi-geo-alt ms-2 me-1"></i>{{ app.drive.location }}
+                            {% endif %}
+                            <i class="bi bi-calendar3 ms-2 me-1"></i>Applied: {{ app.applied_date.strftime('%d %b %Y') }}
+                        </div>
+                        {% if app.cover_note %}
+                        <div class="mt-2 p-2 bg-light rounded small">
+                            <i class="bi bi-chat-quote me-1 text-muted"></i>{{ app.cover_note }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-end">
+                        <span class="badge fs-6
+                            {% if app.status == 'selected' %}bg-success
+                            {% elif app.status == 'shortlisted' %}bg-primary
+                            {% elif app.status == 'rejected' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {% if app.status == 'selected' %}🎉 {% endif %}
+                            {{ app.status | capitalize }}
+                        </span>
+                        <div class="text-muted small mt-1">
+                            Drive: {{ app.drive.status | capitalize }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-inbox display-4 mb-3 d-block"></i>
+    <p>You haven't applied for any drive yet.</p>
+    <a href="{{ url_for('student.drives') }}" class="btn btn-primary">
+        <i class="bi bi-briefcase me-2"></i>Browse Drives
+    </a>
+</div>
+{% endif %}
+{% endblock %}

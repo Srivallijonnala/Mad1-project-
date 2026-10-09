@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — Student{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-person-circle me-2 text-primary"></i>Edit My Profile
+                </h3>
+                <div class="alert alert-light d-flex align-items-center gap-3 mb-4">
+                    <i class="bi bi-person-fill fs-3 text-primary"></i>
+                    <div>
+                        <strong>{{ student.name }}</strong>
+                        <div class="text-muted small">{{ student.user.email }} | Roll: {{ student.roll_number }}</div>
+                    </div>
+                    {% if student.resume_filename %}
+                    <a href="{{ url_for('student.download_resume', filename=student.resume_filename) }}"
+                       target="_blank" class="btn btn-sm btn-outline-success ms-auto">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>View Resume
+                    </a>
+                    {% endif %}
+                </div>
+
+                <form method="POST" action="{{ url_for('student.profile') }}" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" required
+                                   value="{{ student.name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone</label>
+                            <input type="tel" name="phone" class="form-control"
+                                   value="{{ student.phone or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Branch</label>
+                            <select name="branch" class="form-select">
+                                {% for br in ['Computer Science', 'Information Technology', 'Electronics & Communication', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering', 'Other'] %}
+                                <option {% if student.branch == br %}selected{% endif %}>{{ br }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">CGPA</label>
+                            <input type="number" name="cgpa" class="form-control"
+                                   value="{{ student.cgpa }}" min="0" max="10" step="0.01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Graduation Year</label>
+                            <input type="number" name="graduation_year" class="form-control"
+                                   value="{{ student.graduation_year or '' }}" min="2020" max="2035">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Bio</label>
+                            <textarea name="bio" class="form-control" rows="3"
+                                      placeholder="A short bio about yourself...">{{ student.bio or '' }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Upload Resume</label>
+                            <input type="file" name="resume" class="form-control" accept=".pdf,.doc,.docx">
+                            <div class="form-text">Accepted formats: PDF, DOC, DOCX. Max size: 16 MB.</div>
+                            {% if student.resume_filename %}
+                            <div class="form-text text-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Current resume: {{ student.resume_filename }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save me-2"></i>Save Profile
+                        </button>
+                        <a href="{{ url_for('student.dashboard') }}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

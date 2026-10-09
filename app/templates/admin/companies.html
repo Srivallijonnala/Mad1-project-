@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Manage Companies — Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Manage Companies</h2>
+<form method="GET" action="{{ url_for('admin.companies') }}" class="mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" name="search" class="form-control" placeholder="Search companies..." value="{{ search }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        {% if search %}
+        <a href="{{ url_for('admin.companies') }}" class="btn btn-secondary">Clear</a>
+        {% endif %}
+    </div>
+</form>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Company Name</th>
+                        <th>HR Contact</th>
+                        <th>Industry</th>
+                        <th>Website</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                    <tr>
+                        <td>{{ company.id }}</td>
+                        <td>
+                            <strong>{{ company.company_name }}</strong>
+                            {% if company.user.is_blacklisted %}
+                                <span class="badge bg-dark ms-1">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ company.hr_contact or '—' }}</td>
+                        <td>{{ company.industry or '—' }}</td>
+                        <td>
+                            {% if company.website %}
+                                <a href="{{ company.website }}" target="_blank" class="text-truncate d-inline-block" style="max-width:120px;">
+                                    {{ company.website }}
+                                </a>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if company.approval_status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif company.approval_status == 'pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif company.approval_status == 'rejected' %}
+                                <span class="badge bg-secondary">Rejected</span>
+                            {% elif company.approval_status == 'blacklisted' %}
+                                <span class="badge bg-dark">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                {% if company.approval_status == 'pending' %}
+                                <a href="{{ url_for('admin.approve_company', company_id=company.id) }}"
+                                   class="btn btn-sm btn-success">Approve</a>
+                                <a href="{{ url_for('admin.reject_company', company_id=company.id) }}"
+                                   class="btn btn-sm btn-secondary">Reject</a>
+                                {% endif %}
+
+                                {% if company.approval_status == 'approved' %}
+                                <a href="{{ url_for('admin.blacklist_company', company_id=company.id) }}"
+                                   class="btn btn-sm btn-warning">
+                                Blacklist</a>
+                                {% endif %}
+
+                                <form method="POST" action="{{ url_for('admin.delete_company', company_id=company.id) }}"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No companies found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

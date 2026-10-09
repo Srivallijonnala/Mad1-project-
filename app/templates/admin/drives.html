@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Manage Drives — Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Placement Drives</h2>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Location</th>
+                        <th>Deadline</th>
+                        <th>Applications</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drive in drives %}
+                    <tr>
+                        <td>{{ drive.id }}</td>
+                        <td>
+                            <strong>{{ drive.job_title }}</strong>
+                            <div class="text-muted small text-truncate" style="max-width:200px;">
+                                {{ drive.job_description[:60] }}...
+                            </div>
+                        </td>
+                        <td>{{ drive.company.company_name }}</td>
+                        <td>{{ drive.package or '—' }}</td>
+                        <td>{{ drive.location or '—' }}</td>
+                        <td>{{ drive.deadline.strftime('%d %b %Y') if drive.deadline else '—' }}</td>
+                        <td>
+                            <span class="badge bg-info text-dark">{{ drive.applications | length }}</span>
+                        </td>
+                        <td>
+                            {% if drive.status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif drive.status == 'pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif drive.status == 'rejected' %}
+                                <span class="badge bg-secondary">Rejected</span>
+                            {% elif drive.status == 'closed' %}
+                                <span class="badge bg-dark">Closed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+
+                                {% if drive.status == 'pending' %}
+                                <form method="POST"
+                                      action="{{ url_for('admin.approve_drive', drive_id=drive.id) }}"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <form method="POST"
+                                      action="{{ url_for('admin.reject_drive', drive_id=drive.id) }}"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-secondary">
+                                        Reject
+                                    </button>
+                                </form>
+                                {% endif %}
+
+
+                                {% if drive.status == 'approved' %}
+                                <form method="POST"
+                                      action="{{ url_for('admin.close_drive', drive_id=drive.id) }}"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Close this drive?')">
+                                    <button type="submit" class="btn btn-sm btn-warning">
+                                        Close
+                                    </button>
+                                </form>
+                                {% endif %}
+
+
+                                <form method="POST"
+                                      action="{{ url_for('admin.delete_drive', drive_id=drive.id) }}"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Delete this drive?')">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">No drives found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

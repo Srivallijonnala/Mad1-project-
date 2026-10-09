@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Student Registration — Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="fw-bold text-center mb-4">
+                    <i class="bi bi-person-plus-fill me-2 text-primary"></i>Student Registration
+                </h3>
+                <form method="POST" action="{{ url_for('auth.register_student') }}">
+
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Account Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
+                            <input type="text" name="username" class="form-control" required
+                                   placeholder="Choose a username">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" required
+                                   placeholder="your@email.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password" class="form-control" required
+                                   placeholder="Create a password" minlength="6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" name="confirm_password" class="form-control" required
+                                   placeholder="Repeat your password">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Academic Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" required placeholder="Your full name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Roll Number <span class="text-danger">*</span></label>
+                            <input type="text" name="roll_number" class="form-control" required placeholder="e.g. 2021CS101">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Branch <span class="text-danger">*</span></label>
+                            <select name="branch" class="form-select" required>
+                                <option value="">Select Branch</option>
+                                <option>Computer Science</option>
+                                <option>Information Technology</option>
+                                <option>Electronics & Communication</option>
+                                <option>Electrical Engineering</option>
+                                <option>Mechanical Engineering</option>
+                                <option>Civil Engineering</option>
+                                <option>Chemical Engineering</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">CGPA</label>
+                            <input type="number" name="cgpa" class="form-control" placeholder="e.g. 8.5"
+                                   min="0" max="10" step="0.01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Graduation Year</label>
+                            <input type="number" name="graduation_year" class="form-control"
+                                   placeholder="e.g. 2025" min="2020" max="2035">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="10-digit mobile number">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-check me-2"></i>Register
+                        </button>
+                    </div>
+                </form>
+                <p class="text-center mt-3 text-muted">
+                    Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

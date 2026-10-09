@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Applications — {{ drive.job_title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+        <h2 class="fw-bold mb-0">{{ drive.job_title }}</h2>
+        <p class="text-muted mb-0">Applications received for this drive</p>
+    </div>
+</div>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <small class="text-muted">Package</small>
+                <div class="fw-semibold">{{ drive.package or '—' }}</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Location</small>
+                <div class="fw-semibold">{{ drive.location or '—' }}</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Deadline</small>
+                <div class="fw-semibold">{{ drive.deadline.strftime('%d %b %Y') }}</div>
+            </div>
+            <div class="col-md-3">
+                <small class="text-muted">Total Applicants</small>
+                <div class="fw-semibold">{{ applications | length }}</div>
+            </div>
+        </div>
+        {% if drive.eligibility_criteria %}
+        <div class="mt-2">
+            <small class="text-muted">Eligibility:</small>
+            <span class="ms-1">{{ drive.eligibility_criteria }}</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% if applications %}
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Roll No.</th>
+                        <th>Branch</th>
+                        <th>CGPA</th>
+                        <th>Resume</th>
+                        <th>Applied On</th>
+                        <th>Current Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ app.id }}</td>
+                        <td>
+                            <strong>{{ app.student.name }}</strong>
+                            {% if app.cover_note %}
+                            <i class="bi bi-chat-text text-info ms-1"
+                               title="{{ app.cover_note }}"
+                               data-bs-toggle="tooltip"></i>
+                            {% endif %}
+                        </td>
+                        <td><code>{{ app.student.roll_number }}</code></td>
+                        <td>{{ app.student.branch }}</td>
+                        <td>{{ app.student.cgpa }}</td>
+                        <td>
+                            {% if app.student.resume_filename %}
+                                <a href="{{ url_for('student.download_resume', filename=app.student.resume_filename) }}"
+                                   target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download me-1"></i>Resume
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Not uploaded</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ app.applied_date.strftime('%d %b %Y') }}</td>
+                        <td>
+                            <span class="badge
+                                {% if app.status == 'selected' %}bg-success
+                                {% elif app.status == 'shortlisted' %}bg-primary
+                                {% elif app.status == 'rejected' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ app.status | capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('company.update_application', app_id=app.id) }}"
+                                  class="d-flex gap-1 align-items-center">
+                                <select name="status" class="form-select form-select-sm" style="min-width:130px;">
+                                    <option value="applied" {% if app.status == 'applied' %}selected{% endif %}>Applied</option>
+                                    <option value="shortlisted" {% if app.status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+                                    <option value="selected" {% if app.status == 'selected' %}selected{% endif %}>Selected</option>
+                                    <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+    <i class="bi bi-inbox display-4 mb-3 d-block"></i>
+    <p>No applications received yet for this drive.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Company Registration — Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="fw-bold text-center mb-4">
+                    <i class="bi bi-building-add me-2 text-success"></i>
+                    Company Registration
+                </h3>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    After registration, your account must be <strong>approved by the admin</strong> before you can log in.
+                </div>
+                <form method="POST" action="{{ url_for('auth.register_company') }}">
+
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Account Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
+                            <input type="text" name="username" class="form-control" required
+                                   placeholder="Choose a username">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" required
+                                   placeholder="hr@company.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password" class="form-control" required
+                                   placeholder="Create a password" minlength="6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" name="confirm_password" class="form-control" required
+                                   placeholder="Repeat your password">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3">Company Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Company Name <span class="text-danger">*</span></label>
+                            <input type="text" name="company_name" class="form-control" required
+                                   placeholder="e.g. TechCorp Pvt Ltd">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">HR Contact</label>
+                            <input type="text" name="hr_contact" class="form-control"
+                                   placeholder="HR person name or phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Website</label>
+                            <input type="url" name="website" class="form-control"
+                                   placeholder="https://www.company.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Industry</label>
+                            <select name="industry" class="form-select">
+                                <option value="">Select Industry</option>
+                                <option>Information Technology</option>
+                                <option>Software Development</option>
+                                <option>Finance & Banking</option>
+                                <option>E-Commerce</option>
+                                <option>Consulting</option>
+                                <option>Manufacturing</option>
+                                <option>Healthcare</option>
+                                <option>Education</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Company Description</label>
+                            <textarea name="description" class="form-control" rows="3"
+                                      placeholder="Brief description about your company..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-building-check me-2"></i>Submit Registration
+                        </button>
+                    </div>
+                </form>
+                <p class="text-center mt-3 text-muted">
+                    Already registered? <a href="{{ url_for('auth.login') }}">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
